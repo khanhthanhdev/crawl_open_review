@@ -13,7 +13,8 @@ A comprehensive Python crawler for extracting academic papers, reviews, comments
 - **Multiple Output Formats**: JSON (complete data) and CSV (summaries)
 - **Progress Tracking**: Real-time progress bars and detailed logging
 - **Error Recovery**: Robust error handling with retry logic
-- **Data Validation**: Ensures data completeness and quality
+- **Data Validation**: Pydantic schemas ensure data completeness and quality
+- **Type Safety**: Full type checking and validation for all crawled data
 
 ## Installation
 
@@ -175,6 +176,93 @@ save_data(data, year=2024, accepted_only=True)
 |----------|-------|---------|-------------|------------|----------|----------|-----------|
 | ICLR.cc/2024/... | Paper Title | Author One, Author Two | 4 | 7.5 | Accept (poster) | deep learning | https://... |
 
+## Data Validation with Pydantic Schemas
+
+The crawler includes comprehensive Pydantic schemas for data validation and type safety. All crawled data is automatically validated against these schemas to ensure data quality and consistency.
+
+### Schema Overview
+
+The project uses Pydantic models defined in `src/schemas.py`:
+
+- **`Paper`**: Complete paper record with metadata, reviews, comments, and decisions
+- **`Review`**: Individual peer review with ratings, confidence, and detailed feedback
+- **`Comment`**: Comments, rebuttals, and discussions on papers
+- **`MetaReview`**: Meta-reviews and final decisions
+- **`CrawlResult`**: Complete crawling result with statistics and metadata
+
+### Key Features
+
+- **Automatic Validation**: All data is validated against schemas during crawling
+- **Type Safety**: Ensures correct data types and required fields
+- **Data Normalization**: Automatic normalization of authors, keywords, and ratings
+- **Error Handling**: Clear validation errors for debugging
+- **JSON Schema Generation**: Automatic schema generation for API documentation
+
+### Schema Validation Examples
+
+```python
+from src.schemas import Paper, Review, Comment, CrawlResult, create_paper_from_dict
+
+# Create a validated paper object
+paper_data = {
+    "paper_id": "ICLR.cc/2024/Conference/1234",
+    "forum_id": "ICLR.cc/2024/Conference/1234", 
+    "title": "Deep Learning Paper",
+    "abstract": "Abstract text...",
+    "authors": ["Author One", "Author Two"],
+    "reviews": [
+        {
+            "review_id": "review_123",
+            "rating": "8: Accept",
+            "confidence": "4: High",
+            "review_text": "Excellent work..."
+        }
+    ]
+}
+
+# Validate and create Paper object
+paper = create_paper_from_dict(paper_data)
+print(f"✓ Validated paper: {paper.title}")
+print(f"✓ Average rating: {paper.get_average_rating()}")
+
+# Create complete crawl result
+crawl_result = CrawlResult(
+    venue="ICLR",
+    year=2024,
+    accepted_only=True,
+    papers=[paper]
+)
+
+# Get comprehensive statistics
+stats = crawl_result.get_statistics()
+print(f"Total papers: {stats['total_papers']}")
+print(f"Average rating: {stats['average_rating']}")
+```
+
+### Running Schema Examples
+
+Test the schemas with the included example script:
+
+```bash
+# Run validation examples
+python examples/schemas_example.py
+```
+
+This demonstrates:
+- Paper creation and validation
+- Review and comment handling
+- Error handling for invalid data
+- JSON schema generation
+- Statistics calculation
+
+### Schema Benefits
+
+1. **Data Quality**: Ensures all crawled data meets quality standards
+2. **Type Safety**: Prevents runtime errors from malformed data
+3. **API Ready**: Validated data ready for further processing or APIs
+4. **Documentation**: Automatic JSON schema generation for APIs
+5. **Debugging**: Clear validation errors help identify data issues
+
 ## API Reference
 
 ### Core Functions
@@ -261,12 +349,22 @@ openreview-crawler/
 │   └── document.md      # Detailed architecture documentation
 ├── data/                # Raw crawled data
 ├── output/              # Processed outputs
+├── examples/            # Example scripts and demonstrations
+│   └── schemas_example.py  # Pydantic schema usage examples
 ├── notebooks/           # Jupyter notebooks for analysis
-└── src/                 # Source code (future modular structure)
+└── src/                 # Source code
+    ├── __init__.py
+    ├── schemas.py       # Pydantic data validation schemas
     ├── crawler/
+    │   ├── __init__.py
+    │   └── crawl.py     # Main crawling logic
     ├── parsers/
+    │   ├── comments_parser.py
+    │   └── pdf_parser.py
     ├── storage/
     └── utils/
+        ├── __init__.py
+        └── logger.py    # Logging configuration
 ```
 
 ## Contributing
