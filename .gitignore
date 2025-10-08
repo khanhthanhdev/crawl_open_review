@@ -15,10 +15,9 @@ __pycache__
 # Crawled data files (large JSON/CSV outputs)
 data/
 output/
+!iclr_2024_papers_reviews_accepted_part_*.json  # Allow chunked files
 *.json
 *.csv
-iclr_*_papers*.json
-iclr_*_papers*.csv
 
 # Logs
 logs/*.log
