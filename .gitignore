@@ -13,10 +13,19 @@ __pycache__
 *.pyc
 
 # Crawled data files (large JSON/CSV outputs)
+data/
+output/
+*.json
+*.csv
+iclr_*_papers*.json
+iclr_*_papers*.csv
 
-
-# Log
+# Logs
 logs/*.log
+
+# OS files
+.DS_Store
+Thumbs.db
 
 # OS files
 .DS_Store
