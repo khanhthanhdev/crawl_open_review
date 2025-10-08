@@ -11,3 +11,13 @@ wheels/
 .env
 __pycache__
 *.pyc
+
+# Crawled data files (large JSON/CSV outputs)
+
+
+# Log
+logs/*.log
+
+# OS files
+.DS_Store
+Thumbs.db
